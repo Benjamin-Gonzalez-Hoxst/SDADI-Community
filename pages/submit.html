@@ -1,1 +1,104 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Publicar propuesta — SDADI Community</title><link rel="stylesheet" href="../assets/css/global.css"><link rel="stylesheet" href="../assets/css/layout.css"><link rel="stylesheet" href="../assets/css/components.css"><link rel="stylesheet" href="../assets/css/responsive.css"></head><body data-page="explore"><a class="skip-link" href="#contenido">Saltar al contenido</a><header id="site-header"></header><main id="contenido" class="section-shell page-hero"><span class="section-kicker">Comparte</span><h1>Tu próxima idea puede empezar aquí.</h1><p>Publicar, votar y comentar requiere una cuenta para proteger la participación de la comunidad.</p><div id="submit-area"><div class="placeholder-card"><p>Comprobando tu sesión…</p></div></div></main><footer id="site-footer"></footer><script src="../assets/js/navigation.js"></script><script src="../config/supabase.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="../assets/js/supabase.js"></script><script src="../assets/js/auth.js"></script></body></html>
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Publicar propuesta — SDADI Community</title>
+  <link rel="stylesheet" href="../assets/css/global.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/responsive.css">
+</head>
+<body data-page="explore">
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <header id="site-header"></header>
+  <main id="contenido" class="section-shell page-hero">
+    <span class="section-kicker">Comparte</span>
+    <h1>Tu próxima idea puede empezar aquí.</h1>
+    <p>Publicar, votar y comentar requiere una cuenta para proteger la participación de la comunidad.</p>
+
+    <div id="submit-loading" class="placeholder-card">
+      <p>Comprobando tu sesión…</p>
+    </div>
+
+    <div id="submit-guest" class="auth-required" hidden>
+      <span class="section-kicker">Acceso necesario</span>
+      <h2>Inicia sesión para publicar una propuesta.</h2>
+      <p>Explorar es abierto para todos. Para publicar, votar o comentar necesitamos identificar tu cuenta.</p>
+      <a class="button button-primary" href="login.html?next=submit.html">Iniciar sesión →</a>
+    </div>
+
+    <div id="submit-panel" class="submit-card" hidden>
+      <span class="section-kicker">Nueva propuesta</span>
+      <h2>Cuéntanos qué quieres cambiar.</h2>
+      <p>Una propuesta clara explica el problema y la solución. Los campos marcados con * son obligatorios.</p>
+
+      <form id="proposal-form" class="proposal-form">
+        <label for="title">Título *</label>
+        <input id="title" name="title" type="text" minlength="5" maxlength="140" required autocomplete="off">
+        <p class="field-hint">Entre 5 y 140 caracteres.</p>
+
+        <label for="description">Resumen *</label>
+        <textarea id="description" name="description" minlength="20" maxlength="2000" required></textarea>
+        <p class="field-hint">Una descripción breve de la idea. Entre 20 y 2000 caracteres.</p>
+
+        <div class="form-row">
+          <div>
+            <label for="problem">El problema *</label>
+            <textarea id="problem" name="problem" minlength="20" maxlength="3000" required></textarea>
+            <p class="field-hint">¿Qué situación quieres resolver? Entre 20 y 3000 caracteres.</p>
+          </div>
+          <div>
+            <label for="solution">La solución propuesta *</label>
+            <textarea id="solution" name="solution" minlength="20" maxlength="3000" required></textarea>
+            <p class="field-hint">¿Cómo lo resolvería tu propuesta? Entre 20 y 3000 caracteres.</p>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label for="category">Categoría *</label>
+            <select id="category" name="category" required>
+              <option value="">Elige una categoría</option>
+              <option>Tecnología</option>
+              <option>Educación</option>
+              <option>Medioambiente</option>
+              <option>Comunidad</option>
+              <option>Salud y bienestar</option>
+              <option>Ciencia</option>
+              <option>Software</option>
+              <option>Diseño</option>
+              <option>Innovación</option>
+              <option>Otros</option>
+            </select>
+          </div>
+          <div>
+            <label for="tags">Etiquetas</label>
+            <input id="tags" name="tags" type="text" maxlength="120" autocomplete="off">
+            <p class="field-hint">Sepáralas con comas. Máximo 5 etiquetas de 20 caracteres.</p>
+          </div>
+        </div>
+
+        <label for="link_url">Enlace opcional</label>
+        <input id="link_url" name="link_url" type="url" maxlength="300" placeholder="https://" autocomplete="off">
+        <p class="field-hint">Referencia, documento o repositorio relacionado.</p>
+
+        <div class="form-actions">
+          <button class="button button-primary" type="submit">Publicar propuesta →</button>
+          <span class="field-hint">Se publicará con tu cuenta actual.</span>
+        </div>
+        <div id="proposal-message" class="auth-message" hidden role="status" aria-live="polite"></div>
+      </form>
+    </div>
+  </main>
+  <footer id="site-footer"></footer>
+  <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+  <script src="../assets/js/navigation.js"></script>
+  <script src="../assets/js/notifications.js"></script>
+  <script src="../config/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../assets/js/supabase.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script src="../assets/js/proposals.js"></script>
+</body>
+</html>

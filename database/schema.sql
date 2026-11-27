@@ -22,6 +22,7 @@ create table if not exists public.proposals (
   category text not null check (category in ('Tecnología','Educación','Medioambiente','Comunidad','Salud y bienestar','Ciencia','Software','Diseño','Innovación','Otros')),
   status text not null default 'Nueva' check (status in ('Nueva','En evaluación','Aprobada','En desarrollo','Completada','Archivada')),
   tags text[] not null default '{}',
+  link_url text check (link_url is null or link_url ~ '^https?://[^[:space:]]+$'),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );

@@ -1,5 +1,6 @@
 -- SDADI Community - Row Level Security
 -- Ejecutar después de database/schema.sql.
+-- Después ejecutar database/grants.sql para los permisos de tabla.
 
 alter table public.profiles enable row level security;
 alter table public.proposals enable row level security;

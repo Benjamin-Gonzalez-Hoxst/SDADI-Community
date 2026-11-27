@@ -76,12 +76,30 @@ La portada tiene navegación, hero, composición visual de ideas conectadas, est
 - Estados vacíos y mensajes de funciones pendientes.
 - Se probaron búsqueda de “huertos” y apertura del detalle localmente.
 
+### Fase 3 — Publicación real de propuestas
+
+- `pages/submit.html` es un formulario real conectado a `public.proposals`.
+- Campos: título, resumen, problema, solución, categoría, etiquetas y enlace opcional.
+- Validación en HTML y JavaScript, con mensajes de carga, error y éxito.
+- `author_id` se toma siempre de la sesión de Supabase, nunca de un campo del cliente.
+- Al publicar, redirige a `pages/proposal.html?id=...` con el UUID creado.
+- `pages/proposal.html` carga propuestas reales desde Supabase y mantiene los datos demo solo para IDs de demostración.
+- Las etiquetas se separan por comas, sin duplicados, máximo 5 de 20 caracteres.
+- El enlace opcional requiere `http://` o `https://`.
+
 ### Base de Supabase
 
 El usuario creó un proyecto de Supabase Cloud y ejecutó manualmente en SQL Editor, en este orden:
 
 1. `database/schema.sql`
 2. `database/policies.sql`
+
+Después de la Fase 3 se añadieron dos scripts que todavía deben ejecutarse en el SQL Editor:
+
+1. `database/grants.sql` — permisos de tabla para `anon` y `authenticated`. Sin esto, el navegador recibe `permission denied for table proposals`.
+2. `database/migrations/001_proposals_link.sql` — columna `link_url` de las propuestas.
+
+`database/schema.sql` ya incluye `link_url` para instalaciones nuevas. El archivo de migración solo es necesario si el esquema se aplicó antes de la Fase 3.
 
 El esquema contiene:
 
@@ -194,6 +212,7 @@ assets/js/app.js
 assets/js/auth.js
 assets/js/navigation.js
 assets/js/notifications.js
+assets/js/proposals.js
 assets/js/supabase.js
 
 config/supabase.js
@@ -201,6 +220,8 @@ config/supabase.example.js
 
 database/schema.sql
 database/policies.sql
+database/grants.sql
+database/migrations/001_proposals_link.sql
 
 pages/about.html
 pages/community.html
@@ -222,55 +243,55 @@ pages/submit.html
 - Explorador local: comprobado.
 - Búsqueda de propuestas: comprobada.
 - Detalle de propuesta: comprobado.
+- Detalle real desde Supabase: consulta verificada; falta aplicar `database/grants.sql`.
 - Formulario de registro: cargado correctamente.
+- Formulario de publicación: protección de sesión y renderizado comprobados en local.
 - Git push: confirmado en `origin/main`.
 
 ## Pendientes prioritarios
 
-1. Confirmar que GitHub Pages publique correctamente en `/SDADI-Community/`.
+1. Ejecutar `database/grants.sql` y `database/migrations/001_proposals_link.sql` en Supabase SQL Editor.
 2. Probar un registro real con autorización del usuario.
 3. Confirmar en Supabase que se crea la fila correspondiente en `profiles`.
-4. Implementar el formulario real de publicación en `pages/submit.html`.
+4. Probar la publicación real de una propuesta y su detalle.
 5. Conectar `proposals` a `pages/explore.html` y sustituir datos demo gradualmente.
 6. Implementar votos con la restricción única `(proposal_id, user_id)`.
 7. Implementar comentarios y respuestas.
 8. Implementar perfiles y cierre de sesión.
-9. Añadir manejo de errores de red y estados de carga.
-10. Revisar accesibilidad, seguridad y rutas de GitHub Pages.
+9. Revisar accesibilidad, seguridad y rutas de GitHub Pages.
 
 ## Prompt listo para la siguiente IA
 
 ```text
 Continúa el proyecto SDADI Community desde C:\Users\Administrator\Documents\SDADI.
 
-Lee primero HANDOFF-OTRA-IA.md, README.md, database/schema.sql y database/policies.sql.
-No repitas la Fase 1 ni la Fase 2. No reemplaces archivos sin revisarlos.
+Lee primero HANDOFF-OTRA-IA.md, README.md, database/schema.sql, database/policies.sql y database/grants.sql.
+No repitas las fases 1, 2 ni 3. No reemplaces archivos sin revisarlos.
 
 Estado actual:
 - GitHub: https://github.com/Benjamin-Gonzalez-Hoxst/SDADI-Community
-- Rama main ya subida con commit fe2dc71.
-- GitHub Pages debe publicar desde main y /(root).
+- Rama main con la Fase 3 (formulario real de propuestas).
+- GitHub Pages publica desde main y /(root); la URL responde 200.
 - Supabase Cloud ya fue creado.
 - schema.sql y policies.sql ya fueron ejecutados manualmente en Supabase.
+- Falta ejecutar database/grants.sql y database/migrations/001_proposals_link.sql en el SQL Editor.
 - Supabase Auth está integrado en login.html y register.html.
 - config/supabase.js contiene la URL y clave publishable del proyecto.
 - Nunca uses ni solicites una clave service_role o una contraseña.
 - Cloudflare no debe alojar el sitio; solo se evaluará como proxy/DNS cuando exista un dominio propio.
 
 Primero verifica:
-1. Que GitHub Pages funcione en https://benjamin-gonzalez-hoxst.github.io/SDADI-Community/.
-2. Que las rutas relativas funcionen en ese subdirectorio.
-3. Que el formulario de registro cargue Supabase Auth sin errores de consola.
+1. Que el usuario haya ejecutado database/grants.sql y database/migrations/001_proposals_link.sql.
+2. Que una propuesta publicada se vea en pages/proposal.html?id=... con su autor real.
+3. Que las rutas relativas sigan funcionando en el subdirectorio de GitHub Pages.
 
-Después implementa la siguiente tarea pendiente: convertir pages/submit.html en un formulario real conectado a public.proposals.
+Después implementa la siguiente tarea pendiente: conectar pages/explore.html a public.proposals.
 
-Requisitos del formulario:
-- Solo usuarios autenticados.
-- Campos: título, descripción, problema, solución, categoría, etiquetas y enlace opcional.
-- Validación en HTML y JavaScript.
-- Insertar author_id usando el usuario de Supabase, nunca un ID escrito por el cliente.
-- Mensajes de carga, error y éxito.
-- Redirigir al detalle creado usando proposal.html?id=...
+Requisitos:
+- Leer propuestas reales desde Supabase con paginación simple y estado de carga.
+- Mantener los datos demo separados y etiquetados, nunca mezclados como si fueran reales.
+- Conservar búsqueda, filtros, ordenamiento y enlaces al detalle.
+- Manejar errores de red y listas vacías.
 - No mostrar datos ficticios como reales.
 - Mantener GitHub Pages compatible.
 - Verificar enlaces, sintaxis y comportamiento antes de terminar.
