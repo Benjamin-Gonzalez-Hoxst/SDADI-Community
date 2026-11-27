@@ -76,14 +76,6 @@ python -m http.server 8000
 
 Luego abre [http://localhost:8000](http://localhost:8000). También puedes usar una extensión como *Live Server*.
 
-Antes de usar autenticación local, añade `http://localhost:8000/**` en Supabase en **Authentication → URL Configuration → Redirect URLs**. Para el panel de moderación, ejecuta la migración `database/migrations/003_moderation_and_rate_limits.sql` y marca como administrador, desde el SQL Editor, la cuenta autorizada:
-
-```sql
-update public.profiles set is_admin = true where id = 'UUID_DE_LA_CUENTA_ADMIN';
-```
-
-La librería de Supabase está fijada a `2.119.2` y se carga con hash de integridad desde jsDelivr.
-
 ---
 
 ## 🤝 Únete y participa
