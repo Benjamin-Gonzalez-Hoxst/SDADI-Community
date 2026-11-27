@@ -1,2 +1,95 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Comunidad — SDADI Community</title><link rel="stylesheet" href="../assets/css/global.css"><link rel="stylesheet" href="../assets/css/layout.css"><link rel="stylesheet" href="../assets/css/components.css"><link rel="stylesheet" href="../assets/css/responsive.css"></head><body data-page="community"><header id="site-header"></header><main class="section-shell page-hero"><span class="section-kicker">Comunidad</span><h1>Conversa, aporta y conecta.</h1><p>Este espacio reunirá debates, anuncios y publicaciones de las personas que hacen crecer SDADI.</p><div class="placeholder-card"><h3>La comunidad se está preparando</h3><p>La base visual está lista. Las conversaciones llegarán en la fase de funcionalidad.</p><a class="button button-primary" href="../index.html">Volver al inicio →</a></div></main><footer id="site-footer"></footer><script src="../assets/js/navigation.js"></script></body></html>
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Comunidad SDADI: debate, comparte preguntas, anuncios y conecta con otros colaboradores.">
+  <title>Comunidad — SDADI Community</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/global.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/responsive.css">
+</head>
+<body data-page="community">
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <header id="site-header"></header>
 
+  <main id="contenido" class="section-shell page-hero">
+    <div class="explore-intro">
+      <div>
+        <span class="section-kicker">Comunidad</span>
+        <h1>Conversa, aporta y conecta.</h1>
+        <p>Espacio abierto para debatir ideas, formular preguntas a la comunidad y coordinar iniciativas.</p>
+      </div>
+      <span class="demo-badge">Conversaciones en vivo</span>
+    </div>
+
+    <!-- Filtros de categoría -->
+    <div class="tabs" role="tablist" aria-label="Filtrar por categoría">
+      <button class="tab is-active" type="button" role="tab" aria-selected="true" data-community-filter="all">Todos</button>
+      <button class="tab" type="button" role="tab" aria-selected="false" data-community-filter="Debate">Debates</button>
+      <button class="tab" type="button" role="tab" aria-selected="false" data-community-filter="Pregunta">Preguntas</button>
+      <button class="tab" type="button" role="tab" aria-selected="false" data-community-filter="Anuncio">Anuncios</button>
+      <button class="tab" type="button" role="tab" aria-selected="false" data-community-filter="General">General</button>
+    </div>
+
+    <!-- Lista de publicaciones -->
+    <section id="community-list" class="proposal-grid" style="margin-top:24px;" aria-live="polite">
+      <div class="placeholder-card"><p>Cargando publicaciones…</p></div>
+    </section>
+
+    <!-- Aviso si es invitado -->
+    <div id="community-guest-notice" class="auth-required" hidden style="margin-top:32px;">
+      <span class="section-kicker">Únete a la conversación</span>
+      <h2>Inicia sesión para participar</h2>
+      <p>Cualquier persona puede leer los aportes. Para publicar preguntas o debates, necesitas una cuenta.</p>
+      <a class="button button-primary" href="login.html?next=community.html">Iniciar sesión →</a>
+    </div>
+
+    <!-- Formulario para publicar (cuando hay sesión) -->
+    <section class="submit-card" id="community-create" hidden aria-labelledby="community-create-title" style="margin-top:40px;">
+      <span class="section-kicker">Nueva publicación</span>
+      <h2 id="community-create-title">Abre un tema con la comunidad</h2>
+      <p>Comparte un debate, una duda sobre innovación o un anuncio relevante.</p>
+      <form id="community-form" class="proposal-form">
+        <label for="post-title">Título *</label>
+        <input id="post-title" name="title" type="text" minlength="5" maxlength="140" placeholder="¿De qué trata este tema?" required>
+        <p class="field-hint">Entre 5 y 140 caracteres.</p>
+
+        <label for="post-category">Categoría *</label>
+        <select id="post-category" name="category" required>
+          <option value="">Elige una categoría</option>
+          <option value="Debate">Debate</option>
+          <option value="Pregunta">Pregunta</option>
+          <option value="Anuncio">Anuncio</option>
+          <option value="General">General</option>
+        </select>
+
+        <label for="post-content">Contenido *</label>
+        <textarea id="post-content" name="content" minlength="1" maxlength="5000" rows="5" placeholder="Escribe aquí tu reflexión, contexto o consulta…" required></textarea>
+        <p class="field-hint">Máximo 5000 caracteres.</p>
+
+        <div class="form-actions">
+          <button class="button button-primary" type="submit">Publicar en la comunidad →</button>
+        </div>
+        <div id="community-message" class="auth-message" hidden role="status" aria-live="polite"></div>
+      </form>
+    </section>
+  </main>
+
+  <footer id="site-footer"></footer>
+  <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="../assets/js/navigation.js"></script>
+  <script src="../assets/js/notifications.js"></script>
+  <script src="../config/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../assets/js/supabase.js"></script>
+  <script src="../assets/js/core.js"></script>
+  <script src="../assets/js/session.js"></script>
+  <script src="../assets/js/community.js"></script>
+</body>
+</html>

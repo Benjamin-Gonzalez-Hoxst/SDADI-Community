@@ -1,2 +1,85 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Proyectos — SDADI Community</title><link rel="stylesheet" href="../assets/css/global.css"><link rel="stylesheet" href="../assets/css/layout.css"><link rel="stylesheet" href="../assets/css/components.css"><link rel="stylesheet" href="../assets/css/responsive.css"></head><body data-page="projects"><header id="site-header"></header><main class="section-shell page-hero"><span class="section-kicker">En movimiento</span><h1>Ideas que ya están construyendo.</h1><p>Los proyectos comunitarios tendrán aquí su espacio de seguimiento y colaboración.</p><div class="placeholder-card"><h3>Panel de proyectos</h3><p>La estructura visual está preparada para la siguiente fase.</p><a class="button button-primary" href="../index.html">Volver al inicio →</a></div></main><footer id="site-footer"></footer><script src="../assets/js/navigation.js"></script></body></html>
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Proyectos colaborativos de SDADI Community. Conoce su avance y postúlate para colaborar.">
+  <title>Proyectos — SDADI Community</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/global.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/responsive.css">
+</head>
+<body data-page="projects">
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <header id="site-header"></header>
+  <main id="contenido" class="section-shell page-hero">
+    <span class="section-kicker">En movimiento</span>
+    <h1>Ideas que ya están construyendo.</h1>
+    <p>Proyectos comunitarios con su avance, sus responsables y las personas que quieren colaborar.</p>
 
+    <div id="projects-area">
+      <div class="placeholder-card"><p>Cargando proyectos…</p></div>
+    </div>
+
+    <section class="submit-card" id="project-create" hidden aria-labelledby="project-create-title">
+      <span class="section-kicker">Nuevo proyecto</span>
+      <h2 id="project-create-title">Convierte una propuesta en proyecto.</h2>
+      <p>El proyecto se publica con tu cuenta como responsable.</p>
+      <form id="project-form" class="proposal-form">
+        <label for="project-title">Título *</label>
+        <input id="project-title" name="title" type="text" minlength="5" maxlength="140" required>
+        <label for="project-description">Descripción *</label>
+        <textarea id="project-description" name="description" minlength="20" maxlength="3000" required></textarea>
+        <div class="form-row">
+          <div>
+            <label for="project-category">Categoría *</label>
+            <select id="project-category" name="category" required>
+              <option value="">Elige una categoría</option>
+              <option>Tecnología</option>
+              <option>Educación</option>
+              <option>Medioambiente</option>
+              <option>Comunidad</option>
+              <option>Salud y bienestar</option>
+              <option>Ciencia</option>
+              <option>Software</option>
+              <option>Diseño</option>
+              <option>Innovación</option>
+              <option>Otros</option>
+            </select>
+          </div>
+          <div>
+            <label for="project-status">Estado *</label>
+            <select id="project-status" name="status" required>
+              <option>Planificación</option>
+              <option>Buscando colaboradores</option>
+              <option>En desarrollo</option>
+              <option>En pausa</option>
+              <option>Completado</option>
+            </select>
+          </div>
+        </div>
+        <label for="project-github">Repositorio de GitHub</label>
+        <input id="project-github" name="github_url" type="url" maxlength="300" placeholder="https://github.com/">
+        <div class="form-actions">
+          <button class="button button-primary" type="submit">Crear proyecto →</button>
+        </div>
+        <div id="project-message" class="auth-message" hidden role="status" aria-live="polite"></div>
+      </form>
+    </section>
+  </main>
+  <footer id="site-footer"></footer>
+  <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+  <script src="../assets/js/navigation.js"></script>
+  <script src="../assets/js/notifications.js"></script>
+  <script src="../config/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../assets/js/supabase.js"></script>
+  <script src="../assets/js/core.js"></script>
+  <script src="../assets/js/session.js"></script>
+  <script src="../assets/js/projects.js"></script>
+</body>
+</html>

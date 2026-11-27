@@ -1,45 +1,80 @@
-# SDADI Community
+# ✦ SDADI Community
 
-Base visual de la plataforma abierta de ideas, innovación y colaboración comunitaria.
+> *«Las ideas crecen cuando se comparten.»*
 
-## Estado actual
+Bienvenido a **SDADI Community**, una plataforma abierta, participativa y colaborativa diseñada para conectar personas con iniciativas que buscan transformar su entorno.
 
-- Fase 1: portada, sistema visual, navegación responsive y componentes reutilizables.
-- Fase 2: explorador con búsqueda, filtros, ordenamiento y detalles de propuestas.
-- Fase 3: formulario real de publicación conectado a `public.proposals` y detalle dinámico desde Supabase.
-- Supabase: esquema SQL, políticas RLS y configuración pública preparados.
-- Auth: registro, inicio de sesión, sesión persistente y protección de publicar propuesta.
-- GitHub Pages: configurado para la rama `main` y la carpeta raíz.
+Aquí cualquier persona puede proponer ideas, descubrir perspectivas inspiradoras, debatir soluciones y encontrar colaboradores para convertir propuestas aprobadas en proyectos reales.
 
-## Ejecutar localmente
+---
 
-Puedes abrir `index.html` directamente en el navegador o servir la carpeta con cualquier servidor HTTP estático.
+## 🚀 Entra a la plataforma
 
-## Supabase
+La plataforma está disponible y funcionando en vivo en:
 
-El esquema está en `database/schema.sql` y las políticas en `database/policies.sql`. En Supabase SQL Editor se deben ejecutar en ese orden, y después `database/grants.sql`.
+### 👉 **[https://benjamin-gonzalez-hoxst.github.io/SDADI-Community/](https://benjamin-gonzalez-hoxst.github.io/SDADI-Community/)**
 
-Si el esquema ya estaba aplicado, ejecutar `database/migrations/001_proposals_link.sql` para añadir la columna `link_url` de las propuestas.
+---
 
-La configuración pública está en `config/supabase.js`. Nunca coloques una clave `service_role`, contraseña de PostgreSQL o secreto en el frontend.
+## 🌟 ¿Qué puedes hacer en SDADI Community?
 
-## Publicación
+### 💡 1. Compartir y explorar propuestas reales
+- **Publica tu idea**: Estructura tu propuesta explicando con claridad el problema, la solución planteada, categoría y enlaces de referencia.
+- **Explora la comunidad**: Filtra por categorías (tecnología, educación, medioambiente, impacto social...) y descubre lo que otros están ideando.
+- **Sin datos ficticios**: Todo lo que ves en la plataforma proviene directamente de propuestas auténticas compartidas por usuarios registrados.
 
-GitHub Pages debe usar:
+### 🗳️ 2. Apoyar y enriquecer ideas
+- **Vota y acompaña**: Deja tu apoyo a las iniciativas que consideres que deben avanzar.
+- **Comenta y debate**: Aporta sugerencias, formula preguntas o comparte recursos en hilos de conversación interactivos.
 
-- Branch: `main`
-- Folder: `/ (root)`
+### 🛠️ 3. Convertir propuestas en proyectos
+- Cuando una propuesta toma fuerza, sus creadores y colaboradores pueden transformarla en un **proyecto colaborativo**.
+- Define el estado, mide el porcentaje de avance, añade el repositorio oficial en GitHub y gestiona solicitudes de participación.
 
-La URL prevista es `https://benjamin-gonzalez-hoxst.github.io/SDADI-Community/`.
+### 💬 4. Conversaciones comunitarias
+- Un espacio dedicado para abrir debates, resolver inquietudes, anunciar novedades y crear redes de apoyo entre personas innovadoras.
 
-Cloudflare no aloja este proyecto. Se evaluará más adelante únicamente como DNS/proxy y protección de bots cuando exista un dominio propio.
+---
 
-## Próximos pasos
+## 🌿 Nuestros principios
 
-1. Confirmar que GitHub Pages termine de construir el sitio.
-2. Ejecutar `database/grants.sql` y `database/migrations/001_proposals_link.sql` en Supabase.
-3. Probar un registro real en Supabase.
-4. Conectar `proposals` a `pages/explore.html` y sustituir datos demo gradualmente.
-5. Implementar votos, comentarios y perfiles.
+- **Abierto y transparente**: Sin muros de pago ni algoritmos oscuros. La información y las propuestas son públicas y accesibles para todos.
+- **Rápido y ligero**: Desarrollado con HTML5, CSS3 moderno y JavaScript estándar. Cero compilaciones lentas, máxima compatibilidad y rendimiento instantáneo.
+- **Datos reales y seguros**: Respaldado por Supabase con Row Level Security (RLS) y autenticación segura para cuidar la integridad de cada miembro.
 
-Para el contexto completo de continuidad, leer `HANDOFF-OTRA-IA.md`.
+---
+
+## 🧭 Secciones de la plataforma
+
+| Sección | Enlace directo |
+|---|---|
+| 🏠 **Inicio** | [Portada comunitaria](https://benjamin-gonzalez-hoxst.github.io/SDADI-Community/) |
+| 🔍 **Explorar** | [Catálogo de propuestas](https://benjamin-gonzalez-hoxst.github.io/SDADI-Community/pages/explore.html) |
+| 🚀 **Proyectos** | [Iniciativas en marcha](https://benjamin-gonzalez-hoxst.github.io/SDADI-Community/pages/projects.html) |
+| 💬 **Comunidad** | [Espacio de diálogo y debate](https://benjamin-gonzalez-hoxst.github.io/SDADI-Community/pages/community.html) |
+| ✍️ **Publicar** | [Crear una nueva propuesta](https://benjamin-gonzalez-hoxst.github.io/SDADI-Community/pages/submit.html) |
+| 📖 **Acerca de** | [Nuestra visión y valores](https://benjamin-gonzalez-hoxst.github.io/SDADI-Community/pages/about.html) |
+
+---
+
+## 💻 Desarrollo local
+
+Si deseas clonar o explorar el código en tu equipo:
+
+```bash
+git clone https://github.com/Benjamin-Gonzalez-Hoxst/SDADI-Community.git
+cd SDADI-Community
+```
+
+Puedes abrir directamente `index.html` en cualquier navegador moderno o servir la carpeta con una extensión como *Live Server* o cualquier servidor estático local (`python -m http.server 8000` o `npx serve`).
+
+---
+
+## 🤝 Únete y participa
+
+Tu perspectiva puede ser el impulso que necesita una iniciativa para hacerse realidad.
+
+**[Crea tu cuenta en SDADI Community](https://benjamin-gonzalez-hoxst.github.io/SDADI-Community/pages/register.html)** y comienza a construir con nosotros.
+
+---
+*© 2026 SDADI Community · Hecho con dedicación para la comunidad abierta.*
