@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SDADI Community: comparte ideas, encuentra colaboradores y convierte propuestas en proyectos reales.">
+  <title>SDADI Community — Las ideas crecen cuando se comparten</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/global.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+</head>
+<body data-page="home">
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <header id="site-header"></header>
+  <main id="contenido">
+    <section class="hero section-shell" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Comunidad abierta de innovación</span>
+        <h1 id="hero-title">El futuro comienza con una <span class="text-accent">idea.</span></h1>
+        <p class="hero-lead">Comparte tus propuestas, descubre nuevas perspectivas y encuentra personas dispuestas a construir algo extraordinario.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="pages/explore.html">Explorar propuestas <span aria-hidden="true">→</span></a>
+          <a class="button button-secondary" href="pages/submit.html">Publicar una idea <span aria-hidden="true">＋</span></a>
+        </div>
+        <div class="hero-note"><span class="status-dot status-dot-success"></span> Un espacio para construir en conjunto</div>
+      </div>
+      <div class="hero-art" aria-label="Ilustración de ideas conectadas">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <div class="idea-node node-main"><span class="node-icon">✦</span><strong>Una idea</strong><small>puede cambiarlo todo</small></div>
+        <div class="idea-node node-top"><span>◌</span><strong>Educación</strong></div>
+        <div class="idea-node node-right"><span>⌁</span><strong>Colaboración</strong></div>
+        <div class="idea-node node-bottom"><span>◫</span><strong>Impacto</strong></div>
+        <span class="connection connection-one"></span><span class="connection connection-two"></span><span class="connection connection-three"></span>
+      </div>
+    </section>
+
+    <section class="stats-strip" aria-label="Estadísticas de demostración">
+      <div class="section-shell stats-grid">
+        <div class="stat-item"><strong>128</strong><span>Ideas compartidas</span></div>
+        <div class="stat-item"><strong>24</strong><span>Proyectos activos</span></div>
+        <div class="stat-item"><strong>1.240</strong><span>Miembros registrados</span></div>
+        <span class="demo-badge">Datos de demostración</span>
+      </div>
+    </section>
+
+    <section class="section-shell section-block" aria-labelledby="discover-title">
+      <div class="section-heading"><div><span class="section-kicker">Descubre</span><h2 id="discover-title">Ideas que están tomando forma</h2></div><a class="text-link" href="pages/explore.html">Ver todas <span aria-hidden="true">→</span></a></div>
+      <div class="tabs" role="tablist" aria-label="Ordenar propuestas"><button class="tab is-active" type="button" role="tab" aria-selected="true" data-tab="featured">Destacadas</button><button class="tab" type="button" role="tab" aria-selected="false" data-tab="recent">Recientes</button><button class="tab" type="button" role="tab" aria-selected="false" data-tab="popular">Populares</button></div>
+      <div class="proposal-grid" id="proposal-grid"></div>
+    </section>
+
+    <section class="section-shell section-block projects-preview" aria-labelledby="projects-title">
+      <div class="section-heading"><div><span class="section-kicker">En movimiento</span><h2 id="projects-title">Proyectos de la comunidad</h2></div><a class="text-link" href="pages/projects.html">Explorar proyectos <span aria-hidden="true">→</span></a></div>
+      <div class="project-grid"><article class="project-card project-card-featured"><div class="project-card-top"><span class="project-icon">◒</span><span class="tag tag-green">En desarrollo</span></div><h3>Biblioteca de intercambio local</h3><p>Una red para compartir libros, conocimientos y tiempo dentro de cada barrio.</p><div class="progress-label"><span>Progreso</span><strong>68%</strong></div><div class="progress-bar"><span style="width:68%"></span></div><div class="project-meta"><span>◉ 8 colaboradores</span><span>Comunidad</span></div></article><article class="project-card"><div class="project-card-top"><span class="project-icon icon-blue">⌁</span><span class="tag tag-blue">Buscando colaboradores</span></div><h3>Mapa de espacios accesibles</h3><p>Información comunitaria para encontrar lugares públicos más inclusivos.</p><div class="project-meta project-meta-bottom"><span>◉ 3 colaboradores</span><span>Accesibilidad</span></div></article><article class="project-card project-card-invite"><span class="invite-mark">＋</span><h3>¿Tienes una idea lista para crecer?</h3><p>Publícala y encuentra a las personas que pueden ayudarte a hacerla realidad.</p><a class="text-link" href="pages/submit.html">Comenzar una propuesta <span aria-hidden="true">→</span></a></article></div>
+    </section>
+
+    <section class="community-banner section-shell" aria-labelledby="community-title"><div class="community-banner-mark">✦</div><div><span class="section-kicker">Tu perspectiva importa</span><h2 id="community-title">Las mejores ideas crecen en comunidad.</h2><p>Participa en conversaciones, ofrece tu experiencia y ayuda a que una propuesta pase del papel a la realidad.</p></div><a class="button button-primary" href="pages/register.html">Únete a SDADI <span aria-hidden="true">→</span></a></section>
+  </main>
+  <footer id="site-footer"></footer>
+  <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+  <script src="assets/js/navigation.js"></script><script src="assets/js/notifications.js"></script><script src="assets/js/app.js"></script>
+</body>
+</html>
+
