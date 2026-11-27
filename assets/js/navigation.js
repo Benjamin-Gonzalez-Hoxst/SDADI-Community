@@ -13,7 +13,7 @@
     ['Acerca de','pages/about.html','about']
   ];
 
-  function rootPath(){return document.body.dataset.page==='home'?'':'../'}
+  function rootPath(){return ['home','404'].includes(document.body.dataset.page)?'':'../'}
 
   function renderHeader(){
     const root=rootPath();
@@ -27,8 +27,7 @@
     header.innerHTML=`
       <div class="section-shell header-inner">
         <a class="brand" href="${root}index.html" aria-label="SDADI Community, inicio">
-          <span class="brand-mark">✦</span>
-          <span class="brand-name">SDADI <span>Community</span></span>
+          <img class="brand-logo" src="${root}assets/images/sdadi-logo.png" alt="SDADI Community">
         </a>
         <button class="mobile-toggle" type="button" aria-label="Abrir menú" aria-expanded="false">☰</button>
         <nav class="site-nav" aria-label="Navegación principal">
@@ -81,8 +80,7 @@
       <div class="section-shell footer-inner">
         <div>
           <a class="brand" href="${root}index.html">
-            <span class="brand-mark">✦</span>
-            <span class="brand-name">SDADI <span>Community</span></span>
+            <img class="brand-logo" src="${root}assets/images/sdadi-logo.png" alt="SDADI Community">
           </a>
           <p class="footer-description">Un espacio abierto para compartir ideas, conectar personas y construir proyectos con impacto.</p>
         </div>

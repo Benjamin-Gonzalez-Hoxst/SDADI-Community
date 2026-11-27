@@ -24,6 +24,13 @@
   letter-spacing: -.02em;
 }
 
+.brand-logo {
+  display: block;
+  width: 104px;
+  height: 48px;
+  object-fit: contain;
+}
+
 .brand-mark {
   display: grid;
   place-items: center;

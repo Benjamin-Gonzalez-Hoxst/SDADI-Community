@@ -188,6 +188,10 @@ p {
   color: #09090b;
 }
 
+[data-theme="bw"] .brand-logo {
+  filter: invert(1);
+}
+
 [data-theme="bw"] .hero-art {
   filter: grayscale(100%);
 }
