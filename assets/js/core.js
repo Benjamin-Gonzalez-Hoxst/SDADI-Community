@@ -55,6 +55,7 @@ window.SDADI_CORE=(function(){
     const supabase=client();
     if(!supabase)return null;
     const {data}=await supabase.auth.getSession();
+    window.SDADI_SESSION = data.session || null;
     return data.session||null;
   }
 
@@ -85,8 +86,54 @@ window.SDADI_CORE=(function(){
     const votes=item.votes?.[0]?.count??item.vote_count??0;
     const comments=item.comments?.[0]?.count??item.comment_count??0;
     const tags=Array.isArray(item.tags)?item.tags.slice(0,2):[];
-    return `<article class="proposal-card"><div class="proposal-top"><span class="tag tag-blue">${escapeHtml(item.category)}</span><span class="tag tag-neutral">${escapeHtml(item.status)}</span></div><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.description)}</p>${tags.length?`<div class="detail-tags">${tags.map(tag=>`<span class="tag tag-neutral">#${escapeHtml(tag)}</span>`).join('')}</div>`:''}<div class="proposal-meta"><span class="avatar">${escapeHtml(initial(authorName))}</span><span>${escapeHtml(authorName)}</span><span class="proposal-stats"><span>↗ ${escapeHtml(votes)}</span><span>◌ ${escapeHtml(comments)}</span></span></div><a class="card-link" href="${prefix}proposal.html?id=${encodeURIComponent(item.id)}">Ver propuesta <span aria-hidden="true">→</span></a></article>`;
+    const isOwner=window.SDADI_SESSION?.user?.id && (item.author_id === window.SDADI_SESSION.user.id);
+
+    return `
+      <article class="proposal-card" id="card-${escapeHtml(item.id)}">
+        <div class="proposal-top">
+          <span class="tag tag-blue">${escapeHtml(item.category)}</span>
+          <span class="tag tag-neutral">${escapeHtml(item.status)}</span>
+        </div>
+        <h3>${escapeHtml(item.title)}</h3>
+        <p>${escapeHtml(item.description)}</p>
+        ${tags.length?`<div class="detail-tags">${tags.map(tag=>`<span class="tag tag-neutral">#${escapeHtml(tag)}</span>`).join('')}</div>`:''}
+        <div class="proposal-meta">
+          <span class="avatar">${escapeHtml(initial(authorName))}</span>
+          <span>${escapeHtml(authorName)}</span>
+          <span class="proposal-stats"><span>↗ ${escapeHtml(votes)}</span><span>◌ ${escapeHtml(comments)}</span></span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px;">
+          <a class="card-link" href="${prefix}proposal.html?id=${encodeURIComponent(item.id)}">Ver propuesta <span aria-hidden="true">→</span></a>
+          ${isOwner ? `<button class="text-link" type="button" data-quick-delete="${encodeURIComponent(item.id)}" style="color:var(--red); font-size:11px; cursor:pointer;">Eliminar</button>` : ''}
+        </div>
+      </article>
+    `;
   }
 
-  return {client,escapeHtml,initial,formatDate,humanError,toast,setBusy,rootPath,loginHref,getSession,renderLoading,renderNotice,renderError,authRequired,proposalCard};
+  function bindDelete(container, onDeleted){
+    if(!container) return;
+    container.querySelectorAll('[data-quick-delete]').forEach(btn => {
+      btn.addEventListener('click', async e => {
+        e.preventDefault();
+        e.stopPropagation();
+        const id = btn.dataset.quickDelete;
+        if(!confirm('¿Estás seguro de que deseas eliminar permanentemente esta propuesta?')) return;
+        btn.disabled = true;
+        btn.textContent = 'Eliminando…';
+        const supabase = client();
+        if(!supabase) return;
+        const { error } = await supabase.from('proposals').delete().eq('id', id);
+        if(error){
+          toast(humanError(error, 'No se pudo eliminar la propuesta.'));
+          btn.disabled = false;
+          btn.textContent = 'Eliminar';
+          return;
+        }
+        toast('Propuesta eliminada.');
+        if(typeof onDeleted === 'function') onDeleted(id);
+      });
+    });
+  }
+
+  return {client,escapeHtml,initial,formatDate,humanError,toast,setBusy,rootPath,loginHref,getSession,renderLoading,renderNotice,renderError,authRequired,proposalCard,bindDelete};
 })();

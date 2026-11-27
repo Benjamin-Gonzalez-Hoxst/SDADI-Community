@@ -59,8 +59,10 @@
     }
 
     grid.innerHTML=items.slice(0,state.visible).map(item=>core.proposalCard(item,'')).join('');
+    core.bindDelete(grid, () => { load(); });
+
     loadMore.hidden=items.length<=state.visible;
-    loadMore.textContent=`Cargar más propuestas (${items.length-state.visible} restantes)`;
+    loadMore.textContent=`Cargar más propuestas (${Math.max(0, items.length-state.visible)} restantes)`;
   }
 
   function readFilters(){
@@ -69,10 +71,14 @@
     state.category=params.get('categoria')||'all';
     state.status=params.get('estado')||'all';
     state.sort=params.get('orden')||'recent';
-    document.querySelector('#proposal-search').value=params.get('q')||'';
-    document.querySelector('#category-filter').value=state.category;
-    document.querySelector('#status-filter').value=state.status;
-    document.querySelector('#sort-filter').value=state.sort;
+    const sInput = document.querySelector('#proposal-search');
+    if(sInput) sInput.value=params.get('q')||'';
+    const cFilter = document.querySelector('#category-filter');
+    if(cFilter) cFilter.value=state.category;
+    const stFilter = document.querySelector('#status-filter');
+    if(stFilter) stFilter.value=state.status;
+    const soFilter = document.querySelector('#sort-filter');
+    if(soFilter) soFilter.value=state.sort;
   }
 
   function bind(){
@@ -106,9 +112,11 @@
       return;
     }
 
+    await core.getSession();
+
     const {data,error}=await supabase
       .from('proposals')
-      .select('id,title,description,category,status,tags,created_at,profiles(display_name,username),votes(count),comments(count)')
+      .select('id,author_id,title,description,category,status,tags,created_at,profiles(display_name,username),votes(count),comments(count)')
       .neq('status','Archivada')
       .order('created_at',{ascending:false})
       .limit(MAX_ITEMS);

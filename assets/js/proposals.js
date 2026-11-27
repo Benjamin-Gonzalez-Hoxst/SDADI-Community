@@ -145,7 +145,7 @@
           ${isAuthor ? `
             <button class="button button-secondary" type="button" id="edit-button">Editar</button>
             <button class="button button-secondary" type="button" id="archive-button">Archivar</button>
-            <button class="button button-secondary" type="button" id="delete-button" style="color:var(--red); border-color:#fca5a5;">Eliminar</button>
+            <button class="button button-secondary" type="button" id="delete-button" style="color:var(--red); border-color:#fca5a5;">Eliminar propuesta</button>
           ` : `
             <button class="button button-secondary" type="button" id="report-button">Reportar</button>
           `}
@@ -173,6 +173,7 @@
           ${tags.length?`<div class="detail-tags detail-tags-wrap">${tags.map(tag=>`<span class="tag tag-neutral">#${escapeHtml(tag)}</span>`).join('')}</div>`:''}
           <div class="detail-actions">
             <button class="button button-primary vote-button" type="button" id="vote-button" aria-pressed="false">Apoyar propuesta · <span id="vote-count">0</span></button>
+            ${isAuthor ? `<button class="button button-secondary" type="button" id="delete-bottom-button" style="color:var(--red); border-color:#fca5a5;">Eliminar propuesta</button>` : ''}
           </div>
           <section class="comments-section" aria-labelledby="comments-title">
             <div class="comments-heading">
@@ -341,10 +342,12 @@
       location.href = 'explore.html';
     });
 
-    deleteBtn?.addEventListener('click', async () => {
+    const bottomDeleteBtn = container.querySelector('#delete-bottom-button');
+
+    const handleDelete = async () => {
       if(!confirm('¿Estás seguro de que deseas eliminar permanentemente esta propuesta? Esta acción borrará la propuesta, sus votos y comentarios asociados de manera definitiva.')) return;
-      deleteBtn.disabled = true;
-      deleteBtn.textContent = 'Eliminando…';
+      if(deleteBtn){ deleteBtn.disabled = true; deleteBtn.textContent = 'Eliminando…'; }
+      if(bottomDeleteBtn){ bottomDeleteBtn.disabled = true; bottomDeleteBtn.textContent = 'Eliminando…'; }
 
       const { error } = await supabase
         .from('proposals')
@@ -353,14 +356,17 @@
 
       if(error){
         core.toast(core.humanError(error, 'No se pudo eliminar la propuesta.'));
-        deleteBtn.disabled = false;
-        deleteBtn.textContent = 'Eliminar';
+        if(deleteBtn){ deleteBtn.disabled = false; deleteBtn.textContent = 'Eliminar propuesta'; }
+        if(bottomDeleteBtn){ bottomDeleteBtn.disabled = false; bottomDeleteBtn.textContent = 'Eliminar propuesta'; }
         return;
       }
 
       core.toast('Propuesta eliminada definitivamente.');
       location.href = 'explore.html';
-    });
+    };
+
+    deleteBtn?.addEventListener('click', handleDelete);
+    bottomDeleteBtn?.addEventListener('click', handleDelete);
   }
 
   function initShare(container,item){
@@ -632,7 +638,7 @@
       return;
     }
 
-    const columns='id,title,description,problem,solution,category,status,tags,created_at,profiles(display_name,username)';
+    const columns='id,author_id,title,description,problem,solution,category,status,tags,created_at,profiles(display_name,username)';
     let {data,error}=await supabase
       .from('proposals')
       .select(`${columns},link_url`)
