@@ -34,28 +34,28 @@
 
     <div id="submit-panel" class="submit-card" hidden>
       <span class="section-kicker">Nueva propuesta</span>
-      <h2>Cuéntanos qué quieres cambiar.</h2>
-      <p>Una propuesta clara explica el problema y la solución. Los campos marcados con * son obligatorios.</p>
+      <h2>Cuéntanos qué quieres proponer.</h2>
+      <p>Una propuesta clara ayuda a sumar apoyos. Solo el título, resumen y categoría son obligatorios.</p>
 
       <form id="proposal-form" class="proposal-form">
         <label for="title">Título *</label>
-        <input id="title" name="title" type="text" minlength="5" maxlength="140" required autocomplete="off">
+        <input id="title" name="title" type="text" minlength="5" maxlength="140" required autocomplete="off" placeholder="Ej: Red de apoyo para reciclaje local">
         <p class="field-hint">Entre 5 y 140 caracteres.</p>
 
         <label for="description">Resumen *</label>
-        <textarea id="description" name="description" minlength="20" maxlength="2000" required></textarea>
-        <p class="field-hint">Una descripción breve de la idea. Entre 20 y 2000 caracteres.</p>
+        <textarea id="description" name="description" minlength="20" maxlength="2000" required placeholder="Describe brevemente de qué trata tu idea o propuesta…"></textarea>
+        <p class="field-hint">Entre 20 y 2000 caracteres.</p>
 
         <div class="form-row">
           <div>
-            <label for="problem">El problema *</label>
-            <textarea id="problem" name="problem" minlength="20" maxlength="3000" required></textarea>
-            <p class="field-hint">¿Qué situación quieres resolver? Entre 20 y 3000 caracteres.</p>
+            <label for="problem">El problema <span style="font-weight:normal; color:var(--muted);">(opcional)</span></label>
+            <textarea id="problem" name="problem" maxlength="3000" placeholder="¿Qué situación o necesidad busca resolver?"></textarea>
+            <p class="field-hint">Opcional. Si lo dejas vacío se usará tu resumen.</p>
           </div>
           <div>
-            <label for="solution">La solución propuesta *</label>
-            <textarea id="solution" name="solution" minlength="20" maxlength="3000" required></textarea>
-            <p class="field-hint">¿Cómo lo resolvería tu propuesta? Entre 20 y 3000 caracteres.</p>
+            <label for="solution">La solución propuesta <span style="font-weight:normal; color:var(--muted);">(opcional)</span></label>
+            <textarea id="solution" name="solution" maxlength="3000" placeholder="¿Cómo lo resolvería tu propuesta?"></textarea>
+            <p class="field-hint">Opcional. Puedes detallarlo más adelante.</p>
           </div>
         </div>
 
@@ -77,9 +77,9 @@
             </select>
           </div>
           <div>
-            <label for="tags">Etiquetas</label>
-            <input id="tags" name="tags" type="text" maxlength="120" autocomplete="off">
-            <p class="field-hint">Sepáralas con comas. Máximo 5 etiquetas de 20 caracteres.</p>
+            <label for="tags">Etiquetas <span style="font-weight:normal; color:var(--muted);">(opcional)</span></label>
+            <input id="tags" name="tags" type="text" maxlength="120" autocomplete="off" placeholder="educación, software, barrio">
+            <p class="field-hint">Sepáralas con comas. Máximo 5 etiquetas.</p>
           </div>
         </div>
 

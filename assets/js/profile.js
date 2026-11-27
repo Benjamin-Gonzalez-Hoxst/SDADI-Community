@@ -1,5 +1,4 @@
 // SDADI Community - perfil real del usuario
-
 (async function(){
   const core=window.SDADI_CORE;
   const area=document.querySelector('#profile-area');
@@ -43,14 +42,99 @@
   const votesReceived=items.reduce((total,item)=>total+(item.votes?.[0]?.count||0),0);
   const initials=core.initial(profile.display_name||profile.username);
 
-  area.innerHTML=`<section class="profile-card" aria-labelledby="profile-name"><div class="profile-identity"><span class="profile-avatar" aria-hidden="true">${core.escapeHtml(initials)}</span><div><h2 id="profile-name">${core.escapeHtml(profile.display_name)}</h2><p class="profile-username">@${core.escapeHtml(profile.username)}</p><p class="profile-bio">${profile.bio?core.escapeHtml(profile.bio):'Todavía no has escrito una biografía.'}</p><p class="field-hint">Miembro desde ${core.escapeHtml(core.formatDate(profile.created_at))}</p></div></div><div class="profile-stats"><div><strong>${items.length}</strong><span>propuestas</span></div><div><strong>${votesReceived}</strong><span>apoyos recibidos</span></div></div><div class="profile-actions"><a class="button button-primary" href="submit.html">Publicar propuesta</a><a class="button button-secondary" href="settings.html">Configuración</a></div></section><section class="submit-card" aria-labelledby="edit-title"><span class="section-kicker">Editar</span><h2 id="edit-title">Datos públicos</h2><p>Estos datos aparecen junto a tus propuestas y comentarios.</p><form id="profile-form" class="proposal-form"><label for="display_name">Nombre visible *</label><input id="display_name" name="display_name" type="text" minlength="1" maxlength="80" value="${core.escapeHtml(profile.display_name)}" required><label for="bio">Biografía</label><textarea id="bio" name="bio" maxlength="500">${core.escapeHtml(profile.bio||'')}</textarea><p class="field-hint">Máximo 500 caracteres.</p><label for="avatar_url">URL de avatar</label><input id="avatar_url" name="avatar_url" type="url" maxlength="300" placeholder="https://" value="${core.escapeHtml(profile.avatar_url||'')}"><div class="form-actions"><button class="button button-primary" type="submit">Guardar cambios</button></div><div id="profile-message" class="auth-message" hidden role="status" aria-live="polite"></div></form></section><section class="section-block" aria-labelledby="my-proposals"><div class="section-heading"><div><span class="section-kicker">Aportes</span><h2 id="my-proposals">Mis propuestas</h2></div></div><div class="proposal-grid" id="my-proposal-grid">${items.length?items.map(item=>core.proposalCard(item,'')).join(''):'<div class="empty-state"><h3>Todavía no has publicado propuestas</h3><p>Comparte tu primera idea con la comunidad.</p><a class="button button-primary" href="submit.html">Publicar una idea →</a></div>'}</div></section>`;
+  const proposalCardsHtml = items.length
+    ? items.map(item => `
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          ${core.proposalCard(item,'')}
+          <div style="display:flex; gap:8px;">
+            <a class="button button-secondary" href="proposal.html?id=${encodeURIComponent(item.id)}" style="flex:1; font-size:11px; padding:6px 10px; text-align:center;">Ver / Editar</a>
+            <button class="button button-secondary" type="button" data-delete-my-proposal="${encodeURIComponent(item.id)}" style="color:var(--red); border-color:#fca5a5; font-size:11px; padding:6px 10px;">Eliminar</button>
+          </div>
+        </div>
+      `).join('')
+    : '<div class="empty-state"><h3>Todavía no has publicado propuestas</h3><p>Comparte tu primera idea con la comunidad.</p><a class="button button-primary" href="submit.html">Publicar una idea →</a></div>';
+
+  area.innerHTML=`
+    <section class="profile-card" aria-labelledby="profile-name">
+      <div class="profile-identity">
+        <span class="profile-avatar" aria-hidden="true">${core.escapeHtml(initials)}</span>
+        <div>
+          <h2 id="profile-name">${core.escapeHtml(profile.display_name)}</h2>
+          <p class="profile-username">@${core.escapeHtml(profile.username)}</p>
+          <p class="profile-bio">${profile.bio?core.escapeHtml(profile.bio):'Todavía no has escrito una biografía.'}</p>
+          <p class="field-hint">Miembro desde ${core.escapeHtml(core.formatDate(profile.created_at))}</p>
+        </div>
+      </div>
+      <div class="profile-stats">
+        <div><strong>${items.length}</strong><span>propuestas</span></div>
+        <div><strong>${votesReceived}</strong><span>apoyos recibidos</span></div>
+      </div>
+      <div class="profile-actions">
+        <a class="button button-primary" href="submit.html">Publicar propuesta</a>
+        <a class="button button-secondary" href="settings.html">Configuración</a>
+      </div>
+    </section>
+
+    <section class="submit-card" aria-labelledby="edit-title">
+      <span class="section-kicker">Editar</span>
+      <h2 id="edit-title">Datos públicos</h2>
+      <p>Estos datos aparecen junto a tus propuestas y comentarios.</p>
+      <form id="profile-form" class="proposal-form">
+        <label for="display_name">Nombre visible *</label>
+        <input id="display_name" name="display_name" type="text" minlength="1" maxlength="80" value="${core.escapeHtml(profile.display_name)}" required>
+
+        <label for="bio">Biografía</label>
+        <textarea id="bio" name="bio" maxlength="500">${core.escapeHtml(profile.bio||'')}</textarea>
+        <p class="field-hint">Máximo 500 caracteres.</p>
+
+        <label for="avatar_url">URL de avatar</label>
+        <input id="avatar_url" name="avatar_url" type="url" maxlength="300" placeholder="https://" value="${core.escapeHtml(profile.avatar_url||'')}">
+
+        <div class="form-actions">
+          <button class="button button-primary" type="submit">Guardar cambios</button>
+        </div>
+        <div id="profile-message" class="auth-message" hidden role="status" aria-live="polite"></div>
+      </form>
+    </section>
+
+    <section class="section-block" aria-labelledby="my-proposals">
+      <div class="section-heading">
+        <div>
+          <span class="section-kicker">Aportes</span>
+          <h2 id="my-proposals">Mis propuestas</h2>
+        </div>
+      </div>
+      <div class="proposal-grid" id="my-proposal-grid">
+        ${proposalCardsHtml}
+      </div>
+    </section>
+  `;
+
+  // Eliminar propuesta desde el perfil
+  area.querySelectorAll('[data-delete-my-proposal]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.deleteMyProposal;
+      if(!confirm('¿Estás seguro de que deseas eliminar permanentemente esta propuesta?')) return;
+      btn.disabled = true;
+      btn.textContent = 'Eliminando…';
+      const { error } = await supabase.from('proposals').delete().eq('id', id);
+      if(error){
+        core.toast(core.humanError(error, 'No se pudo eliminar la propuesta.'));
+        btn.disabled = false;
+        btn.textContent = 'Eliminar';
+        return;
+      }
+      core.toast('Propuesta eliminada.');
+      location.reload();
+    });
+  });
 
   const form=area.querySelector('#profile-form');
   const box=area.querySelector('#profile-message');
 
   form?.addEventListener('submit',async event=>{
     event.preventDefault();
-    box.hidden=true;
+    if(box) box.hidden=true;
 
     const displayName=form.display_name.value.trim();
     const bio=form.bio.value.trim();
@@ -71,16 +155,21 @@
     core.setBusy(button,false);
 
     if(updateError){
-      box.textContent=core.humanError(updateError,'No se pudieron guardar los cambios.');
-      box.className='auth-message error';
-      box.hidden=false;
+      if(box){
+        box.textContent=core.humanError(updateError,'No se pudieron guardar los cambios.');
+        box.className='auth-message error';
+        box.hidden=false;
+      }
       return;
     }
 
-    box.textContent='Cambios guardados.';
-    box.className='auth-message success';
-    box.hidden=false;
+    if(box){
+      box.textContent='Cambios guardados.';
+      box.className='auth-message success';
+      box.hidden=false;
+    }
     core.toast('Perfil actualizado.');
-    area.querySelector('#profile-name').textContent=displayName;
+    const nameNode = area.querySelector('#profile-name');
+    if(nameNode) nameNode.textContent=displayName;
   });
 })();

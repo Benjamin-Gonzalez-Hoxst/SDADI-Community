@@ -1,5 +1,5 @@
 // SDADI Community - propuestas reales en Supabase
-// Publicación, detalle, votos, comentarios, reportes, edición y archivo.
+// Publicación, detalle, votos, comentarios, reportes, edición y eliminación.
 (function(){
   const UUID_PATTERN=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   const MAX_TAGS=5;
@@ -59,14 +59,17 @@
       const tags=parseTags(field('tags').value);
       const linkUrl=field('link_url').value.trim();
 
+      // Validación: solo título, resumen y categoría son obligatorios
       if(title.length<5||title.length>140)return setMessage(messageBox,'El título debe tener entre 5 y 140 caracteres.','error');
       if(description.length<20||description.length>2000)return setMessage(messageBox,'El resumen debe tener entre 20 y 2000 caracteres.','error');
-      if(problem.length<20||problem.length>3000)return setMessage(messageBox,'El problema debe tener entre 20 y 3000 caracteres.','error');
-      if(solution.length<20||solution.length>3000)return setMessage(messageBox,'La solución debe tener entre 20 y 3000 caracteres.','error');
       if(!category)return setMessage(messageBox,'Elige una categoría.','error');
       if(tags.length>MAX_TAGS)return setMessage(messageBox,`Puedes usar como máximo ${MAX_TAGS} etiquetas.`,'error');
       if(tags.some(tag=>tag.length>MAX_TAG_LENGTH))return setMessage(messageBox,`Cada etiqueta puede tener hasta ${MAX_TAG_LENGTH} caracteres.`,'error');
       if(linkUrl&&!/^https?:\/\/\S+$/i.test(linkUrl))return setMessage(messageBox,'El enlace debe empezar por http:// o https://.','error');
+
+      // Si problema o solución están vacíos, se completan de forma transparente para la base de datos
+      const finalProblem = problem.length >= 20 ? problem : description;
+      const finalSolution = solution.length >= 20 ? solution : (description.length >= 20 ? description : 'Propuesta abierta a soluciones colaborativas.');
 
       const {data:sessionData,error:sessionError}=await client.auth.getSession();
       if(sessionError||!sessionData.session)return setMessage(messageBox,'Tu sesión expiró. Inicia sesión de nuevo.','error');
@@ -81,8 +84,8 @@
           author_id:sessionData.session.user.id,
           title,
           description,
-          problem,
-          solution,
+          problem: finalProblem,
+          solution: finalSolution,
           category,
           tags,
           link_url:linkUrl||null
@@ -127,6 +130,10 @@
     const session=await core.getSession();
     const isAuthor=session && session.user.id === author.id;
 
+    // Solo mostrar secciones separadas de problema y solución si fueron ingresadas específicamente
+    const showProblem = item.problem && item.problem !== item.description && !item.problem.startsWith('Propuesta comunitaria abierta');
+    const showSolution = item.solution && item.solution !== item.description && !item.solution.startsWith('Propuesta abierta a soluciones');
+
     document.title=`${item.title} — SDADI Community`;
     container.dataset.real='supabase';
     container.innerHTML=`
@@ -137,7 +144,8 @@
           <button class="button button-secondary" type="button" id="share-button">Compartir ↗</button>
           ${isAuthor ? `
             <button class="button button-secondary" type="button" id="edit-button">Editar</button>
-            <button class="button button-secondary" type="button" id="archive-button" style="color:var(--red);">Archivar</button>
+            <button class="button button-secondary" type="button" id="archive-button">Archivar</button>
+            <button class="button button-secondary" type="button" id="delete-button" style="color:var(--red); border-color:#fca5a5;">Eliminar</button>
           ` : `
             <button class="button button-secondary" type="button" id="report-button">Reportar</button>
           `}
@@ -159,10 +167,8 @@
       <div class="detail-layout">
         <article class="detail-content">
           <p class="detail-intro">${escapeHtml(item.description)}</p>
-          <h2>El problema</h2>
-          <p style="white-space: pre-line;">${escapeHtml(item.problem)}</p>
-          <h2>La solución propuesta</h2>
-          <p style="white-space: pre-line;">${escapeHtml(item.solution)}</p>
+          ${showProblem ? `<h2>El problema</h2><p style="white-space: pre-line;">${escapeHtml(item.problem)}</p>` : ''}
+          ${showSolution ? `<h2>La solución propuesta</h2><p style="white-space: pre-line;">${escapeHtml(item.solution)}</p>` : ''}
           ${link}
           ${tags.length?`<div class="detail-tags detail-tags-wrap">${tags.map(tag=>`<span class="tag tag-neutral">#${escapeHtml(tag)}</span>`).join('')}</div>`:''}
           <div class="detail-actions">
@@ -212,11 +218,11 @@
           <label for="edit-description">Resumen *</label>
           <textarea id="edit-description" name="description" minlength="20" maxlength="2000" required>${escapeHtml(item.description)}</textarea>
 
-          <label for="edit-problem">El problema *</label>
-          <textarea id="edit-problem" name="problem" minlength="20" maxlength="3000" required>${escapeHtml(item.problem)}</textarea>
+          <label for="edit-problem">El problema <span style="font-weight:normal; color:var(--muted);">(opcional)</span></label>
+          <textarea id="edit-problem" name="problem" maxlength="3000">${escapeHtml(showProblem ? item.problem : '')}</textarea>
 
-          <label for="edit-solution">La solución propuesta *</label>
-          <textarea id="edit-solution" name="solution" minlength="20" maxlength="3000" required>${escapeHtml(item.solution)}</textarea>
+          <label for="edit-solution">La solución propuesta <span style="font-weight:normal; color:var(--muted);">(opcional)</span></label>
+          <textarea id="edit-solution" name="solution" maxlength="3000">${escapeHtml(showSolution ? item.solution : '')}</textarea>
 
           <label for="edit-category">Categoría *</label>
           <select id="edit-category" name="category" required>
@@ -252,6 +258,7 @@
   function initAuthorActions(container, item){
     const editBtn = container.querySelector('#edit-button');
     const archiveBtn = container.querySelector('#archive-button');
+    const deleteBtn = container.querySelector('#delete-button');
     const editDialog = container.querySelector('#edit-dialog');
     const editForm = container.querySelector('#edit-proposal-form');
     const editMsg = container.querySelector('#edit-message');
@@ -280,10 +287,11 @@
 
       if(title.length<5||title.length>140) return setMessage(editMsg,'El título debe tener entre 5 y 140 caracteres.','error');
       if(description.length<20||description.length>2000) return setMessage(editMsg,'El resumen debe tener entre 20 y 2000 caracteres.','error');
-      if(problem.length<20||problem.length>3000) return setMessage(editMsg,'El problema debe tener entre 20 y 3000 caracteres.','error');
-      if(solution.length<20||solution.length>3000) return setMessage(editMsg,'La solución debe tener entre 20 y 3000 caracteres.','error');
       if(!category) return setMessage(editMsg,'Elige una categoría.','error');
       if(linkUrl&&!/^https?:\/\/\S+$/i.test(linkUrl)) return setMessage(editMsg,'El enlace debe empezar por http:// o https://.','error');
+
+      const finalProblem = problem.length >= 20 ? problem : description;
+      const finalSolution = solution.length >= 20 ? solution : (description.length >= 20 ? description : 'Propuesta abierta a soluciones colaborativas.');
 
       const submitBtn = editForm.querySelector('button[type="submit"]');
       core.setBusy(submitBtn, true, 'Guardando…');
@@ -293,8 +301,8 @@
         .update({
           title,
           description,
-          problem,
-          solution,
+          problem: finalProblem,
+          solution: finalSolution,
           category,
           tags,
           link_url: linkUrl || null
@@ -313,7 +321,7 @@
     });
 
     archiveBtn?.addEventListener('click', async () => {
-      if(!confirm('¿Estás seguro de que deseas archivar esta propuesta? Dejará de ser pública en el explorador.')) return;
+      if(!confirm('¿Deseas archivar esta propuesta? Dejará de ser pública en el explorador.')) return;
       archiveBtn.disabled = true;
       archiveBtn.textContent = 'Archivando…';
 
@@ -330,6 +338,27 @@
       }
 
       core.toast('Propuesta archivada.');
+      location.href = 'explore.html';
+    });
+
+    deleteBtn?.addEventListener('click', async () => {
+      if(!confirm('¿Estás seguro de que deseas eliminar permanentemente esta propuesta? Esta acción borrará la propuesta, sus votos y comentarios asociados de manera definitiva.')) return;
+      deleteBtn.disabled = true;
+      deleteBtn.textContent = 'Eliminando…';
+
+      const { error } = await supabase
+        .from('proposals')
+        .delete()
+        .eq('id', item.id);
+
+      if(error){
+        core.toast(core.humanError(error, 'No se pudo eliminar la propuesta.'));
+        deleteBtn.disabled = false;
+        deleteBtn.textContent = 'Eliminar';
+        return;
+      }
+
+      core.toast('Propuesta eliminada definitivamente.');
       location.href = 'explore.html';
     });
   }
@@ -465,7 +494,24 @@
       const session=window.SDADI_CURRENT_SESSION;
       const own=session&&comment.author_id===session.user.id;
       const replies=children.length?`<div class="comment-replies">${children.map(child=>commentNode(child, byParentMap.get(child.id)||[], byParentMap)).join('')}</div>`:'';
-      return `<article class="comment" id="comment-${escapeHtml(comment.id)}"><div class="comment-head"><span class="avatar">${escapeHtml(core.initial(author.name))}</span><strong>${escapeHtml(author.name)}</strong><time datetime="${escapeHtml(comment.created_at)}">${escapeHtml(core.formatDate(comment.created_at))}</time>${own?'<span class="tag tag-neutral">Tú</span>':''}</div><p class="comment-body">${escapeHtml(comment.content)}</p><div class="comment-actions"><button class="text-link" type="button" data-reply="${escapeHtml(comment.id)}" data-name="${escapeHtml(author.name)}">Responder</button></div>${replies}</article>`;
+      const deleteAction = own ? `<button class="text-link" type="button" data-delete-comment="${escapeHtml(comment.id)}" style="color:var(--red); margin-left:12px;">Eliminar</button>` : '';
+
+      return `
+        <article class="comment" id="comment-${escapeHtml(comment.id)}">
+          <div class="comment-head">
+            <span class="avatar">${escapeHtml(core.initial(author.name))}</span>
+            <strong>${escapeHtml(author.name)}</strong>
+            <time datetime="${escapeHtml(comment.created_at)}">${escapeHtml(core.formatDate(comment.created_at))}</time>
+            ${own?'<span class="tag tag-neutral">Tú</span>':''}
+          </div>
+          <p class="comment-body">${escapeHtml(comment.content)}</p>
+          <div class="comment-actions">
+            <button class="text-link" type="button" data-reply="${escapeHtml(comment.id)}" data-name="${escapeHtml(author.name)}">Responder</button>
+            ${deleteAction}
+          </div>
+          ${replies}
+        </article>
+      `;
     }
 
     async function renderForm(){
@@ -544,6 +590,20 @@
         replyTo={id:button.dataset.reply,name:button.dataset.name};
         renderForm();
         wrap.querySelector('#comment-content')?.focus();
+      }));
+
+      list.querySelectorAll('[data-delete-comment]').forEach(button=>button.addEventListener('click', async ()=>{
+        const commentId = button.dataset.deleteComment;
+        if(!confirm('¿Deseas eliminar este comentario?')) return;
+        button.disabled = true;
+        const { error } = await supabase.from('comments').delete().eq('id', commentId);
+        if(error){
+          core.toast(core.humanError(error, 'No se pudo eliminar el comentario.'));
+          button.disabled = false;
+          return;
+        }
+        core.toast('Comentario eliminado.');
+        await load();
       }));
     }
 

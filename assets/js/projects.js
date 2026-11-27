@@ -1,5 +1,4 @@
 // SDADI Community - proyectos y colaboraciones
-
 (function(){
   const core=window.SDADI_CORE;
   const area=document.querySelector('#projects-area');
@@ -23,7 +22,34 @@
     const members=memberCount(item);
     const progress=Number(item.progress)||0;
     const github=item.github_url?`<a class="text-link" href="${core.escapeHtml(item.github_url)}" target="_blank" rel="noopener noreferrer">Repositorio ↗</a>`:'';
-    return `<article class="project-card project-card-real"><div class="project-card-top"><span class="project-icon">◒</span><span class="tag tag-blue">${core.escapeHtml(item.status)}</span></div><h3>${core.escapeHtml(item.title)}</h3><p>${core.escapeHtml(item.description)}</p><div class="progress-label"><span>Progreso</span><strong>${progress}%</strong></div><div class="progress-bar"><span style="width:${progress}%"></span></div><div class="project-meta"><span>◉ ${members} ${members===1?'colaborador':'colaboradores'}</span><span>${core.escapeHtml(item.category)}</span></div><p class="field-hint">Responsable: ${core.escapeHtml(ownerName)} · ${core.escapeHtml(core.formatDate(item.created_at))}</p><div class="project-actions">${github}${own?'<span class="tag tag-neutral">Tu proyecto</span>':session?`<button class="button button-secondary" type="button" data-join="${core.escapeHtml(item.id)}">Solicitar colaborar</button>`:`<a class="button button-secondary" href="${core.loginHref('projects.html')}">Inicia sesión para colaborar</a>`}</div></article>`;
+
+    const ownerActions = own
+      ? `<span class="tag tag-neutral">Tu proyecto</span><button class="button button-secondary" type="button" data-delete-project="${core.escapeHtml(item.id)}" style="color:var(--red); border-color:#fca5a5; font-size:11px; padding:6px 10px; margin-left:auto;">Eliminar</button>`
+      : session
+        ? `<button class="button button-secondary" type="button" data-join="${core.escapeHtml(item.id)}">Solicitar colaborar</button>`
+        : `<a class="button button-secondary" href="${core.loginHref('projects.html')}">Inicia sesión para colaborar</a>`;
+
+    return `
+      <article class="project-card project-card-real">
+        <div class="project-card-top">
+          <span class="project-icon">◒</span>
+          <span class="tag tag-blue">${core.escapeHtml(item.status)}</span>
+        </div>
+        <h3>${core.escapeHtml(item.title)}</h3>
+        <p>${core.escapeHtml(item.description)}</p>
+        <div class="progress-label"><span>Progreso</span><strong>${progress}%</strong></div>
+        <div class="progress-bar"><span style="width:${progress}%"></span></div>
+        <div class="project-meta">
+          <span>◉ ${members} ${members===1?'colaborador':'colaboradores'}</span>
+          <span>${core.escapeHtml(item.category)}</span>
+        </div>
+        <p class="field-hint">Responsable: ${core.escapeHtml(ownerName)} · ${core.escapeHtml(core.formatDate(item.created_at))}</p>
+        <div class="project-actions">
+          ${github}
+          ${ownerActions}
+        </div>
+      </article>
+    `;
   }
 
   async function load(){
@@ -56,6 +82,24 @@
     area.innerHTML=grid;
 
     area.querySelectorAll('[data-join]').forEach(button=>button.addEventListener('click',()=>joinProject(button)));
+
+    area.querySelectorAll('[data-delete-project]').forEach(button => {
+      button.addEventListener('click', async () => {
+        const projectId = button.dataset.deleteProject;
+        if(!confirm('¿Estás seguro de que deseas eliminar este proyecto? Esta acción no se puede deshacer.')) return;
+        button.disabled = true;
+        button.textContent = 'Eliminando…';
+        const { error } = await supabase.from('projects').delete().eq('id', projectId);
+        if(error){
+          core.toast(core.humanError(error, 'No se pudo eliminar el proyecto.'));
+          button.disabled = false;
+          button.textContent = 'Eliminar';
+          return;
+        }
+        core.toast('Proyecto eliminado.');
+        await load();
+      });
+    });
 
     if(session)renderPendingRequests();
   }
