@@ -1,5 +1,5 @@
 
-# ✦ SDADI Community
+<img width="290" height="144" alt="sdadi-logo" src="https://github.com/user-attachments/assets/9d58ce18-9d44-4487-bb68-0735b2ab5d2a" />
 
 > *«Las ideas crecen cuando se comparten.»*
 
