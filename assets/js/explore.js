@@ -3,8 +3,7 @@
 (function(){
   const core=window.SDADI_CORE;
   const PAGE_SIZE=12;
-  const MAX_ITEMS=200;
-  const state={items:[],visible:PAGE_SIZE,query:'',category:'all',status:'all',sort:'recent'};
+  const state={items:[],visible:PAGE_SIZE,offset:0,hasMore:true,query:'',category:'all',status:'all',sort:'recent'};
 
   const grid=document.querySelector('#explore-grid');
   const countLabel=document.querySelector('#result-count');
@@ -48,7 +47,7 @@
       const hasFilters=state.query||state.category!=='all'||state.status!=='all';
       grid.innerHTML=`<div class="empty-state"><span aria-hidden="true">⌁</span><h3>${hasFilters?'No encontramos propuestas con esos filtros':'Todavía no hay propuestas publicadas'}</h3><p>${hasFilters?'Prueba con otra búsqueda o limpia los filtros.':'Sé la primera persona en compartir una idea con la comunidad.'}</p>${hasFilters?'<button class="button button-secondary" type="button" id="clear-filters">Limpiar filtros</button>':'<a class="button button-primary" href="submit.html">Publicar una idea →</a>'}</div>`;
       grid.querySelector('#clear-filters')?.addEventListener('click',()=>{
-        state.query='';state.category='all';state.status='all';state.visible=PAGE_SIZE;
+        state.query='';state.category='all';state.status='all';state.visible=PAGE_SIZE;state.offset=0;state.items=[];state.hasMore=true;
         document.querySelector('#proposal-search').value='';
         document.querySelector('#category-filter').value='all';
         document.querySelector('#status-filter').value='all';
@@ -61,8 +60,8 @@
     grid.innerHTML=items.slice(0,state.visible).map(item=>core.proposalCard(item,'')).join('');
     core.bindDelete(grid, () => { load(); });
 
-    loadMore.hidden=items.length<=state.visible;
-    loadMore.textContent=`Cargar más propuestas (${Math.max(0, items.length-state.visible)} restantes)`;
+    loadMore.hidden=!state.hasMore;
+    loadMore.textContent='Cargar más propuestas';
   }
 
   function readFilters(){
@@ -100,12 +99,12 @@
     document.querySelector('#sort-filter')?.addEventListener('change',event=>{
       state.sort=event.target.value;state.visible=PAGE_SIZE;syncUrl();render();
     });
-    loadMore?.addEventListener('click',()=>{state.visible+=PAGE_SIZE;render()});
+    loadMore?.addEventListener('click',()=>load(false));
   }
 
-  async function load(){
+  async function load(reset=true){
     const supabase=core.client();
-    core.renderLoading(grid,'Cargando propuestas de la comunidad…');
+    if(reset)core.renderLoading(grid,'Cargando propuestas de la comunidad…');
     if(!supabase){
       core.renderNotice(grid,'Sin conexión con Supabase','No se pudo cargar el cliente de datos. Revisa tu conexión y recarga la página.');
       countLabel.textContent='Propuestas no disponibles';
@@ -114,12 +113,13 @@
 
     await core.getSession();
 
+    if(reset){state.items=[];state.offset=0;state.hasMore=true;}
     const {data,error}=await supabase
       .from('proposals')
       .select('id,author_id,title,description,category,status,tags,created_at,profiles(display_name,username),votes(count),comments(count)')
       .neq('status','Archivada')
       .order('created_at',{ascending:false})
-      .limit(MAX_ITEMS);
+      .range(state.offset,state.offset+PAGE_SIZE-1);
 
     if(error){
       countLabel.textContent='Error al cargar propuestas';
@@ -127,7 +127,9 @@
       return;
     }
 
-    state.items=data||[];
+    state.items=reset?(data||[]):state.items.concat(data||[]);
+    state.offset+=(data||[]).length;
+    state.hasMore=(data||[]).length===PAGE_SIZE;
     render();
   }
 

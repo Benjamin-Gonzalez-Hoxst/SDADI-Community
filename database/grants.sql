@@ -17,3 +17,4 @@ grant insert, update, delete on public.projects to authenticated;
 grant insert, update, delete on public.project_members to authenticated;
 grant insert, update, delete on public.community_posts to authenticated;
 grant insert on public.reports to authenticated;
+grant update on public.reports to authenticated;

@@ -54,9 +54,14 @@ window.SDADI_CORE=(function(){
   async function getSession(){
     const supabase=client();
     if(!supabase)return null;
-    const {data}=await supabase.auth.getSession();
-    window.SDADI_SESSION = data.session || null;
-    return data.session||null;
+    try{
+      const {data}=await supabase.auth.getSession();
+      window.SDADI_SESSION = data.session || null;
+      return data.session||null;
+    }catch(error){
+      window.SDADI_SESSION=null;
+      return null;
+    }
   }
 
   function renderLoading(container,text){
@@ -72,6 +77,10 @@ window.SDADI_CORE=(function(){
     if(!container)return;
     container.innerHTML=`<div class="placeholder-card"><h3>No pudimos cargar esta sección.</h3><p>${escapeHtml(humanError(error,'Hubo un error de red. Inténtalo de nuevo.'))}</p><button class="button button-secondary" type="button" id="retry-button">Reintentar</button></div>`;
     container.querySelector('#retry-button')?.addEventListener('click',()=>retry?.());
+  }
+
+  function isNetworkError(error){
+    return !error || error.name==='TypeError' || /fetch|network|failed to load|offline|timeout/i.test(error.message||'');
   }
 
   function authRequired(container,next,text){
@@ -135,5 +144,5 @@ window.SDADI_CORE=(function(){
     });
   }
 
-  return {client,escapeHtml,initial,formatDate,humanError,toast,setBusy,rootPath,loginHref,getSession,renderLoading,renderNotice,renderError,authRequired,proposalCard,bindDelete};
+  return {client,escapeHtml,initial,formatDate,humanError,toast,setBusy,rootPath,loginHref,getSession,renderLoading,renderNotice,renderError,isNetworkError,authRequired,proposalCard,bindDelete};
 })();

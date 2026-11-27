@@ -12,6 +12,9 @@
   let currentCategory = 'all';
   let session = null;
   let posts = [];
+  const PAGE_SIZE = 12;
+  let page = 0;
+  let hasMore = true;
 
   function postCard(post){
     const author = Array.isArray(post.profiles) ? post.profiles[0] : post.profiles;
@@ -78,7 +81,7 @@
     });
   }
 
-  async function load(){
+  async function load(reset=true){
     core.renderLoading(listContainer, 'Cargando conversaciones de la comunidad…');
     if(!supabase){
       core.renderNotice(listContainer, 'Sin conexión', 'No se pudo conectar con Supabase. Revisa tu conexión.');
@@ -94,19 +97,27 @@
       guestNotice.hidden = !!session;
     }
 
+    if(reset){page=0;posts=[];hasMore=true;}
     const { data, error } = await supabase
       .from('community_posts')
       .select('id, title, content, category, author_id, created_at, profiles(display_name, username)')
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .range(page*PAGE_SIZE,page*PAGE_SIZE+PAGE_SIZE-1);
 
     if(error){
       core.renderError(listContainer, error, load);
       return;
     }
 
-    posts = data || [];
+    posts = reset ? (data||[]) : posts.concat(data||[]);
+    hasMore=(data||[]).length===PAGE_SIZE;
+    page+=1;
+    const more=document.querySelector('#load-more-community');
+    if(more)more.hidden=!hasMore;
     render();
   }
+
+  document.querySelector('#load-more-community')?.addEventListener('click',()=>load(false));
 
   filterButtons.forEach(btn => {
     btn.addEventListener('click', () => {

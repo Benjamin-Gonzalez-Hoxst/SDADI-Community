@@ -494,6 +494,9 @@
     if(!supabase||!list||!wrap)return;
 
     let replyTo=null;
+    let commentPage=0;
+    let comments=[];
+    const COMMENT_PAGE_SIZE=30;
 
     function commentNode(comment, children, byParentMap){
       const author=authorOf(comment);
@@ -558,23 +561,26 @@
       if(error)return setMessage(box,core.humanError(error,'No se pudo publicar el comentario.'),'error');
       replyTo=null;
       form.reset();
-      await load();
+      await load(true);
     }
 
-    async function load(){
-      list.innerHTML='<p class="field-hint">Cargando comentarios…</p>';
+    async function load(reset=false){
+      if(reset){commentPage=0;comments=[];list.innerHTML='<p class="field-hint">Cargando comentarios…</p>';}
       const {data,error}=await supabase
         .from('comments')
         .select('id,content,parent_id,author_id,created_at,profiles(display_name,username)')
         .eq('proposal_id',item.id)
-        .order('created_at',{ascending:true});
+        .order('created_at',{ascending:true})
+        .range(commentPage*COMMENT_PAGE_SIZE,commentPage*COMMENT_PAGE_SIZE+COMMENT_PAGE_SIZE-1);
 
       if(error){
         list.innerHTML=`<p class="field-hint">${escapeHtml(core.humanError(error,'No se pudieron cargar los comentarios.'))}</p>`;
         return;
       }
 
-      const comments=data||[];
+      comments=reset?(data||[]):comments.concat(data||[]);
+      const hasMore=(data||[]).length===COMMENT_PAGE_SIZE;
+      commentPage+=1;
       if(count)count.textContent=comments.length;
       if(side)side.textContent=comments.length;
 
@@ -591,6 +597,10 @@
       });
 
       list.innerHTML=(byParent.get('root')||[]).map(comment=>commentNode(comment,byParent.get(comment.id)||[], byParent)).join('');
+      let more=list.parentElement.querySelector('#load-more-comments');
+      if(!more){more=document.createElement('button');more.id='load-more-comments';more.type='button';more.className='button button-secondary';more.textContent='Cargar más comentarios';list.parentElement.appendChild(more);}
+      more.hidden=!hasMore;
+      more.onclick=()=>load(false);
 
       list.querySelectorAll('[data-reply]').forEach(button=>button.addEventListener('click',()=>{
         replyTo={id:button.dataset.reply,name:button.dataset.name};
@@ -609,7 +619,7 @@
           return;
         }
         core.toast('Comentario eliminado.');
-        await load();
+        await load(true);
       }));
     }
 
