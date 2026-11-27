@@ -1,5 +1,5 @@
 
-<img width="290" height="144" alt="sdadi-logo" src="https://github.com/user-attachments/assets/9d58ce18-9d44-4487-bb68-0735b2ab5d2a" />
+<img width="500" height="500" alt="S" src="https://github.com/user-attachments/assets/2c4e7b25-8d0d-468b-9c7b-4f5685b0150b" />
 
 > *«Las ideas crecen cuando se comparten.»*
 
