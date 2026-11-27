@@ -1,3 +1,4 @@
+<img width="500" height="500" alt="S" src="https://github.com/user-attachments/assets/4b997442-f49f-4e31-93ee-3a6710e06268" />
 # ✦ SDADI Community
 
 > *«Las ideas crecen cuando se comparten.»*
