@@ -1,16 +1,18 @@
 :root {
-  --bg: #f8fafc;
+  --bg: #f4f7ff;
   --surface: #ffffff;
-  --header-bg: rgba(248, 250, 252, 0.94);
-  --blue: #2563eb;
-  --blue-soft: #dbeafe;
-  --ink: #17243b;
-  --muted: #64748b;
-  --line: #e2e8f0;
-  --green: #16a34a;
-  --red: #dc2626;
-  --card-invite: #eff6ff;
-  --card-invite-border: #bfdbfe;
+  --header-bg: rgba(244, 247, 255, 0.88);
+  --blue: #5b5cf0;
+  --blue-soft: #e5e7ff;
+  --ink: #18213f;
+  --muted: #66708f;
+  --line: #dde3f2;
+  --green: #12a875;
+  --red: #e05264;
+  --purple: #925cf5;
+  --orange: #f08a5d;
+  --card-invite: #eeefff;
+  --card-invite-border: #cfd0ff;
   --radius: 16px;
   --shadow: 0 10px 30px rgba(23, 36, 59, 0.06);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -47,9 +49,24 @@ html {
 
 body {
   margin: 0;
-  background: var(--bg);
+  background:
+    radial-gradient(circle at 8% 8%, rgba(146, 92, 245, .13), transparent 28rem),
+    radial-gradient(circle at 92% 18%, rgba(240, 138, 93, .11), transparent 25rem),
+    var(--bg);
   color: var(--ink);
   line-height: 1.55;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: .28;
+  background-image: radial-gradient(rgba(91, 92, 240, .13) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: linear-gradient(to bottom, black, transparent 72%);
+  z-index: -1;
 }
 
 a {

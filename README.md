@@ -85,5 +85,7 @@ Tu perspectiva puede ser el impulso que necesita una iniciativa para hacerse rea
 
 **[Crea tu cuenta en SDADI Community](https://benjamin-gonzalez-hoxst.github.io/SDADI-Community/pages/register.html)** y comienza a construir con nosotros.
 
+Para activar el chat, ejecuta después de la migración 003 el archivo `database/migrations/004_chat_messages.sql` en Supabase.
+
 ---
 *© 2026 SDADI Community · Hecho con dedicación para la comunidad abierta.*

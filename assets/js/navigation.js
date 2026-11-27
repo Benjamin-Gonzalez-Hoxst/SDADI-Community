@@ -10,6 +10,7 @@
     ['Explorar','pages/explore.html','explore'],
     ['Proyectos','pages/projects.html','projects'],
     ['Comunidad','pages/community.html','community'],
+    ['Chat','pages/chat.html','chat'],
     ['Acerca de','pages/about.html','about']
   ];
 

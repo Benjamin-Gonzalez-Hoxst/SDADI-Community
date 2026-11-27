@@ -16,6 +16,34 @@
   box-shadow: var(--shadow);
 }
 
+.proposal-card, .project-card, .submit-card, .auth-card {
+  box-shadow: 0 18px 45px rgba(45, 48, 110, .08);
+  border-color: rgba(91, 92, 240, .16);
+}
+
+.proposal-card:hover, .project-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 22px 48px rgba(45, 48, 110, .14);
+}
+
+.chat-layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 22px; align-items: start; }
+.chat-rooms, .chat-panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+.chat-rooms { padding: 14px; }
+.chat-room { width: 100%; border: 0; background: transparent; text-align: left; padding: 12px; border-radius: 10px; color: var(--muted); }
+.chat-room.is-active, .chat-room:hover { background: var(--blue-soft); color: var(--blue); }
+.chat-panel { min-height: 520px; display: grid; grid-template-rows: auto 1fr auto; overflow: hidden; }
+.chat-panel-head { padding: 18px 22px; border-bottom: 1px solid var(--line); background: linear-gradient(120deg, var(--blue-soft), transparent); }
+.chat-panel-head h2 { margin: 0; font-size: 18px; }
+.chat-messages { padding: 22px; display: grid; align-content: start; gap: 12px; overflow: auto; }
+.chat-message { max-width: 78%; padding: 12px 14px; border-radius: 14px 14px 14px 4px; background: var(--bg); border: 1px solid var(--line); }
+.chat-message.is-own { justify-self: end; border-radius: 14px 14px 4px 14px; background: var(--blue); color: #fff; border-color: transparent; }
+.chat-message-meta { display: flex; justify-content: space-between; gap: 14px; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+.chat-message.is-own .chat-message-meta { color: rgba(255,255,255,.78); }
+.chat-message p { margin: 0; white-space: pre-line; }
+.chat-form { display: flex; gap: 10px; padding: 16px; border-top: 1px solid var(--line); }
+.chat-form textarea { flex: 1; min-height: 44px; max-height: 120px; resize: vertical; }
+@media(max-width:700px){.chat-layout{grid-template-columns:1fr}.chat-rooms{display:flex;gap:8px;overflow:auto}.chat-room{width:auto;white-space:nowrap}.chat-panel{min-height:460px}.chat-message{max-width:90%}}
+
 .placeholder-card p {
   font-size: 14px;
 }
